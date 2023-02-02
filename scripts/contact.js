@@ -1,25 +1,22 @@
 "use strict";
 
 class Contact{
-    constructor(fullName = "", contactNumber = "", emailAddress = "", shortMsg = "") {
+    constructor(fullName = "", contactNumber = "", emailAddress = "") {
         this.FullName = fullName;
         this.ContactNumber = contactNumber;
         this.EmailAddress = emailAddress;
-        this.ShortMsg = shortMsg;
     }
 
     get FullName(){
-        return this._FullName;
+        return this.m_contactNumber;
     }
     get ContactNumber(){
-        return this._ContactNumber;
+        return this.m_contactNumber;
     }
     get EmailAddress(){
-        return this._EmailAdress;
+        return this.m_contactNumber;
     }
-    get ShortMsg(){
-        return this._ShortMsg;
-    }
+
     set FullName(fullName){
         this.m_fullName = fullName;
     }
@@ -29,12 +26,24 @@ class Contact{
     set EmailAddress(emailAddress){
         this.m_emailAddress = emailAddress;
     }
-    set ShortMsg(shortMsg){
-        this.m_shortMsg = shortMsg;
+
+    hello(){
+        if(this.FullName != "" && this.ContactNumber != "" && this.EmailAddress  != ""){
+            return `${this.m_fullName}, ${this.m_contactNumber}, ${this.m_emailAddress}`;
+        }
+        console.error("One or more of th properties of the Contact object are missing or invalid");
+        return null;
+    };
+    deserialize(data){
+        let propertyArray = data.split(",");
+        this.FullName = propertyArray[0];
+        this.ContactNumber = propertyArray[1];
+        this.EmailAddress = propertyArray[2];
     }
 
+
     toString(){
-        return `Full Name: ${this.m_fullName}\n Contact Number: ${this.m_contactNumber}\n EmailAddress: ${this.m_emailAddress
-        }\n Short Message ${this.m_shortMsg}`
+        return `Full Name: ${this.FullName}\n Contact Number: ${this.ContactNumber}\n EmailAddress: ${this.EmailAddress
+        }`
     }
 }
