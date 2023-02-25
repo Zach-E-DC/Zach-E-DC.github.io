@@ -1,5 +1,122 @@
 "use strict";
+class User{
+    constructor(firstName = "", lastName = "", emailAddress="",
+                password="", confirmPassword = "") {
+        this.FirstName = firstName;
+        this.LastName = lastName;
+        this.EmailAddress = emailAddress;
+        this.Password = password;
+        this.ConfirmPassword = confirmPassword;
+    }
+    get FirstName(){
+        return this.m_firstName;
+    }
+    get LastName(){
+        return this.m_lastName;
+    }
+    get EmailAddress(){
+        return this.m_emailAdress;
+    }
+    get Password(){
+        return this.m_password;
+    }
+    get ConfirmPassword(){
+        return this.m_confirmPassword;
+    }
+    set FirstName(firstName){
+        this.m_firstName = firstName;
+    }
+    set LastName(lastName){
+        this.m_lastName = lastName;
+    }
+    set EmailAddress(emailAddress){
+        this.m_emailAdress = emailAddress;
+    }
+    set Password(password){
+        this.m_password = password;
+    }
+    set ConfirmPassword(confirmPassword){
+        this.m_confirmPassword = confirmPassword;
+    }
+    hello(){
+        if(this.FirstName != "" && this.LastName != "" && this.EmailAddress  != "" && this.Password != "" &&
+            this.ConfirmPassword != ""){
+            return `${this.m_firstName}, ${this.m_lastName}, ${this.m_emailAdress}, ${this.m_password}, 
+            ${this.m_confirmPassword}`;
+        }
+        console.error("One or more of the properties of the Contact object are missing or invalid");
+        return null;
+    };
+
+}
 (function (){
+    function BottomNavBar(){
+        let navbarLinks = document.getElementById("navbarLinks");
+
+//creating list element
+        let listItem = document.createElement("a");
+        listItem.setAttribute("id", "nav-item");
+        listItem.innerText("Human Resources");
+
+//creating link
+        let link=document.createElement("a");
+        link.setAttribute("class", "nav-link");
+        link.setAttribute("href", "hresources.html");
+
+//creating icon
+        let icon=document.createElement("i");
+        icon.setAttribute("class", "fa-solid fa-person");
+
+        link.textContent="Human Resources";
+
+//appending
+        listItem.appendChild(link);
+        navbarLinks.appendChild(listItem);
+
+//d
+        let outher_nav=document.createElement("nav");
+        outher_nav.setAttribute("class","navbar fixed-bottom navbar-expand-lg bg-body-tertiary navbar-dark bg-dark");
+
+        let outer_div=document.createElement("div");
+        outer_div.setAttribute("class","container-fluid");
+
+
+
+        let inner_div=document.createElement("nav");
+        inner_div.setAttribute("class","collapse navbar-collapse");
+
+
+        let copyright = document.createElement("div");
+        copyright.setAttribute("class", "navbar-text text-right");
+
+        let currentYear = new Date().getFullYear();
+        copyright.textContent = "Copyright © " + currentYear;
+
+        inner_div.appendChild(copyright);
+        outer_div.appendChild(inner_div);
+        outher_nav.appendChild(outer_div);
+        document.body.appendChild(outher_nav);
+    }
+    function SimpleDOM(){
+        //SIMPLE DOM B
+        let products=document.getElementById("products");
+        products.innerHTML="Projects";
+        products.innerHTML = "<i class='fas fa-box'></i>Projects";
+        products.appendChild(iconElement)
+        let navbar = document.querySelector("#navbarSupportedContent .navbar-nav");
+
+        let hrNavItem = document.createElement("li");
+        hrNavItem.className = "nav-item";
+
+        let hrNavLink = document.createElement("a");
+        hrNavLink.className = "nav-link";
+        hrNavLink.href = "humanresources.html";
+
+        let hrNavIcon = document.createElement("i");
+        hrNavIcon.className = "fas fa-users";
+
+        let hrNavText = document.createTextNode(" Human Resources");
+    }
     function AddContact(fullName, contactNumber, emailAddress){
         let contact = new core.Contact(fullName, contactNumber, emailAddress);
         if(contact.hello()){
@@ -7,10 +124,20 @@
             localStorage.setItem(key, contact.hello());
         }
     }
+    function AddUser(firstName, lastName, emailAddress, password, confirmPassword){
+        let user = new User(firstName, lastName, emailAddress, password, confirmPassword);
+        if(user.hello()){
+            let key = user.FirstName.substring(0,1) + Date.now();
+            localStorage.setItem(key, user.hello());
+        }
+    }
 
-    function DisplayHomePage(){
+
+    function DisplayHomePage(){;
+
+
         console.log("Home Page")
-
+        document.querySelector('#navbarLinks a[href="products.html"]').textContent = "Projects";
         $("#AboutUsBtn").on("click", () => {
             location.href = "about.html"
         })
@@ -141,6 +268,72 @@
             }
         }
     }
+    function ValidateField(input_field_id, regular_expression, error_message){
+        let messageArea = $("#messageArea");
+
+        $(input_field_id).on("blur", function(){
+
+            let Text = $(this).val();
+            if(!regular_expression.test(Text)){
+
+                $(this).trigger("focus").trigger("select");
+                messageArea.addClass("alert alert-danger").text(error_message).show();
+            }else{
+                messageArea.removeAttr("class").hide();
+            }
+
+        })
+    }
+    function ValidateForms(){
+        ValidateField("#firstName",
+            /^[a-zA-Z]{2,}$/,
+            "First name must be greater than 2 characters and can not include numbers/special characters");
+        ValidateField("#lastName",
+            /^[a-zA-Z]{2,}$/,
+            "Last name must be greater than 2 characters and can not include numbers/special characters");
+        ValidateField("#emailAddress",
+            /^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]{8,}$/,
+            "Email address must be greater then 8 characters and must include the @ symbol");
+        ValidateField("#password",
+            /^[a-zA-Z0-9._-]{6,}$/,
+            "Password Length must be greater than 6 characters");
+        ValidateField("#confirmPassword",
+            /^[a-zA-Z0-9._-]{6,}$/,
+            "Password Length must be greater than 6 characters");
+        ValidateField("#username",
+            /^[a-zA-Z]{2,}$/,
+            "Username must be greater than 2 characters");
+        ValidateField("#loginPassword",
+            /^[a-zA-Z0-9._-]{6,}$/,
+            "Password Length must be greater than 6 characters");
+    }
+
+    function DisplayLoginPage(){
+        console.log("Welcome to login page")
+        ValidateForms();
+        let navUsername = $("#navUsername");
+        $("#loginButton").on("click", () => {
+            navUsername.text($("#username").val());
+        });
+
+
+    }
+    function DisplayRegisterPage(){
+        console.log("Welcome to register page")
+        ValidateForms();
+        let user = new User();
+        $("#registerButton").on("click", () => {
+            // if($("#password") == $("#confirmPassword"))
+            AddUser(user.m_firstName = $("#firstName").val(),
+                user.m_lastName = $("#lastName").val(),
+                user.m_emailAdress = $("#regEmailAddress").val(),
+                user.m_password = $("#password").val(),
+                user.m_confirmPassword = $("#confirmPassword").val());
+            user.hello();
+            location.href = "login.html";
+
+        });
+    }
 
     function Start()
     {
@@ -167,6 +360,12 @@
                 break;
             case "Edit Contact":
                 DisplayEditPage();
+                break;
+            case "Login":
+                DisplayLoginPage();
+                break;
+            case "Register":
+                DisplayRegisterPage();
                 break;
         }
     }
